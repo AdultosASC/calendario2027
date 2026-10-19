@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Institucional Scout 2027</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .badge-consejo { background-color: #fee2e2; color: #991b1b; border-left: 3px solid #ef4444; }
+        .badge-corte { background-color: #f3e8ff; color: #6b21a8; border-left: 3px solid #a855f7; }
+        .badge-jefatura { background-color: #ffedd5; color: #9a3412; border-left: 3px solid #f97316; }
+        .badge-cancilleria { background-color: #fef9c3; color: #854d0e; border-left: 3px solid #eab308; }
+        .badge-vigilancia { background-color: #ccfbf1; color: #115e59; border-left: 3px solid #14b8a6; }
+        .badge-administrativa { background-color: #e0f2fe; color: #0369a1; border-left: 3px solid #0284c7; }
+        .badge-comunicaciones { background-color: #dbeafe; color: #1e40af; border-left: 3px solid #3b82f6; }
+        .badge-dnam { background-color: #d1fae5; color: #065f46; border-left: 3px solid #10b981; }
+        .badge-dnpj { background-color: #ffedd5; color: #c2410c; border-left: 3px solid #fb923c; }
+        .badge-dndi { background-color: #f0fdf4; color: #166534; border-left: 3px solid #22c55e; }
+        .badge-default { background-color: #f1f5f9; color: #334155; border-left: 3px solid #64748b; }
+        .dia-festivo { background-color: #a7f3d0 !important; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans min-h-screen">
+
+    <div id="toast" class="fixed top-5 right-5 z-50 bg-emerald-800 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium transition-all duration-300 transform translate-y-[-150%] opacity-0 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-msg">Mensaje</span>
+    </div>
+
+    <div id="modal-confirmacion" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center relative">
+            <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-3 text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-2">Eliminar Actividad</h3>
+            <p class="text-sm text-slate-600 mb-6">¿Está seguro de eliminar esta actividad del calendario?</p>
+            <input type="hidden" id="delete-id">
+            <div class="flex justify-center gap-3">
+                <button onclick="cerrarModalConfirmacion()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition cursor-pointer w-full">Cancelar</button>
+                <button onclick="ejecutarEliminacion()" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-sm font-medium rounded-lg transition cursor-pointer w-full">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <header class="bg-emerald-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-shield-halved text-3xl text-emerald-400"></i>
+                <div>
+                    <h1 class="text-xl font-bold">Calendario Colombia 2027 - Scout</h1>
+                    <p class="text-xs text-emerald-200">Alojado en GitHub & Sincronizado con Google Sheets</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="verHojaCalculo()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer">
+                    <i class="fa-solid fa-file-excel"></i> Ver Hoja (Solo Lectura)
+                </button>
+                <button onclick="abrirModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer">
+                    <i class="fa-solid fa-plus"></i> Nueva Actividad
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <section class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col h-[82vh]">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-bold text-slate-800 text-base">Actividades Registradas</h2>
+                <span id="total-badge" class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">0</span>
+            </div>
+            
+            <div class="mb-2">
+                <input type="text" id="busqueda" placeholder="Buscar actividad..." onkeyup="aplicarFiltrosLista()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <div class="mb-3">
+                <select id="filtro-direccion" onchange="aplicarFiltrosLista()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                    <option value="">-- Filtrar Lista por Dirección o Comisión --</option>
+                    <option value="Consejo Scout Nacional">Consejo Scout Nacional</option>
+                    <option value="Corte de Honor Nacional">Corte de Honor Nacional</option>
+                    <option value="Jefatura Scout Nacional">Jefatura Scout Nacional</option>
+                    <option value="Cancillería Nacional">Cancillería Nacional</option>
+                    <option value="Comisión Nacional de Vigilancia y Control">Comisión Nacional de Vigilancia y Control</option>
+                    <option value="Dirección Nacional Administrativa">Dirección Nacional Administrativa</option>
+                    <option value="Dirección Nacional de Comunicaciones">Dirección Nacional de Comunicaciones</option>
+                    <option value="Dirección Nacional de Adultos en el Movimiento">Dirección Nacional de Adultos en el Movimiento</option>
+                    <option value="Atracción y Vinculación - DNAM">Atracción y Vinculación - DNAM</option>
+                    <option value="Comisión Nacional de Bienestar - DNAM">Comisión Nacional de Bienestar - DNAM</option>
+                    <option value="Comisión Nacional de Evaluación y Acompañamiento - DNAM">Comisión Nacional de Evaluación y Acompañamiento - DNAM</option>
+                    <option value="Comisión Nacional de Formación - DNAM">Comisión Nacional de Formación - DNAM</option>
+                    <option value="Dirección Nacional de Programa de Jóvenes">Dirección Nacional de Programa de Jóvenes</option>
+                    <option value="Comisión Nacional para Cachorros - DNPJ">Comisión Nacional para Cachorros - DNPJ</option>
+                    <option value="Comisión Nacional para Lobatos - DNPJ">Comisión Nacional para Lobatos - DNPJ</option>
+                    <option value="Comisión Nacional para Scouts - DNPJ">Comisión Nacional para Scouts - DNPJ</option>
+                    <option value="Comisión Nacional para Nomadas Scout - DNPJ">Comisión Nacional para Nomadas Scout - DNPJ</option>
+                    <option value="Comisión Nacional para Rovers - DNPJ">Comisión Nacional para Rovers - DNPJ</option>
+                    <option value="Comisión Nacional por los ODS - DNPJ">Comisión Nacional por los ODS - DNPJ</option>
+                    <option value="Dirección Nacional de Desarrollo Institucional">Dirección Nacional de Desarrollo Institucional</option>
+                    <option value="Comisión Nacional de Crecimiento - DNDI">Comisión Nacional de Crecimiento - DNDI</option>
+                    <option value="Comisión Internacional - DNDI">Comisión Internacional - DNDI</option>
+                    <option value="Comisión Nacional de A salvo del Peligro - DNDI">Comisión Nacional de A salvo del Peligro - DNDI</option>
+                    <option value="Comisión Nacional de Gestión del Riesgo - DNDI">Comisión Nacional de Gestión del Riesgo - DNDI</option>
+                    <option value="Comisión Nacional de Innovación Digital - DNDI">Comisión Nacional de Innovación Digital - DNDI</option>
+                </select>
+            </div>
+
+            <div id="lista-actividades" class="overflow-y-auto flex-1 space-y-3 pr-1">
+                <div class="text-center py-10 text-slate-400 text-sm">Cargando actividades...</div>
+            </div>
+        </section>
+
+        <section class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-center mb-4 bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                    <button onclick="cambiarMes(-1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
+                        <i class="fa-solid fa-chevron-left mr-1"></i> Mes Anterior
+                    </button>
+                    <h2 id="mes-titulo" class="font-bold text-emerald-900 text-lg uppercase tracking-wide">Enero 2027</h2>
+                    <button onclick="cambiarMes(1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
+                        Mes Siguiente <i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-slate-200 text-xs">
+                        <thead>
+                            <tr class="bg-emerald-800 text-white text-center">
+                                <th class="border border-slate-300 py-2 w-[14%]">Lunes</th>
+                                <th class="border border-slate-300 py-2 w-[14%]">Martes</th>
+                                <th class="border border-slate-300 py-2 w-[14%]">Miércoles</th>
+                                <th class="border border-slate-300 py-2 w-[14%]">Jueves</th>
+                                <th class="border border-slate-300 py-2 w-[14%]">Viernes</th>
+                                <th class="border border-slate-300 py-2 w-[14%]">Sábado</th>
+                                <th class="border border-slate-300 py-2 w-[14%]">Domingo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendario-grid"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-3 items-center justify-center text-[11px] text-slate-600">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span> Consejo / Corte</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Jefatura / Cancillería</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span> Comunicaciones / Adm</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> DNAM / DNPJ / DNDI</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-300 inline-block border border-emerald-400"></span> Día Festivo</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Actividad -->
+    <div id="modal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative">
+            <h3 id="modal-titulo" class="text-lg font-bold text-slate-800 mb-4">Nueva Actividad</h3>
+            <input type="hidden" id="act-id">
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha Inicial</label>
+                        <input type="date" id="act-fecha-inicio" min="2027-01-01" max="2027-12-31" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha Final</label>
+                        <input type="date" id="act-fecha-fin" min="2027-01-01" max="2027-12-31" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Descripción de la Actividad</label>
+                    <textarea id="act-descripcion" rows="3" placeholder="Ej: Campamento nacional..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Dirección o Comisión</label>
+                    <select id="act-direccion" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="Consejo Scout Nacional">Consejo Scout Nacional</option>
+                        <option value="Corte de Honor Nacional">Corte de Honor Nacional</option>
+                        <option value="Jefatura Scout Nacional">Jefatura Scout Nacional</option>
+                        <option value="Cancillería Nacional">Cancillería Nacional</option>
+                        <option value="Comisión Nacional de Vigilancia y Control">Comisión Nacional de Vigilancia y Control</option>
+                        <option value="Dirección Nacional Administrativa">Dirección Nacional Administrativa</option>
+                        <option value="Dirección Nacional de Comunicaciones">Dirección Nacional de Comunicaciones</option>
+                        <option value="Dirección Nacional de Adultos en el Movimiento">Dirección Nacional de Adultos en el Movimiento</option>
+                        <option value="Atracción y Vinculación - DNAM">Atracción y Vinculación - DNAM</option>
+                        <option value="Comisión Nacional de Bienestar - DNAM">Comisión Nacional de Bienestar - DNAM</option>
+                        <option value="Comisión Nacional de Evaluación y Acompañamiento - DNAM">Comisión Nacional de Evaluación y Acompañamiento - DNAM</option>
+                        <option value="Comisión Nacional de Formación - DNAM">Comisión Nacional de Formación - DNAM</option>
+                        <option value="Dirección Nacional de Programa de Jóvenes">Dirección Nacional de Programa de Jóvenes</option>
+                        <option value="Comisión Nacional para Cachorros - DNPJ">Comisión Nacional para Cachorros - DNPJ</option>
+                        <option value="Comisión Nacional para Lobatos - DNPJ">Comisión Nacional para Lobatos - DNPJ</option>
+                        <option value="Comisión Nacional para Scouts - DNPJ">Comisión Nacional para Scouts - DNPJ</option>
+                        <option value="Comisión Nacional para Nomadas Scout - DNPJ">Comisión Nacional para Nomadas Scout - DNPJ</option>
+                        <option value="Comisión Nacional para Rovers - DNPJ">Comisión Nacional para Rovers - DNPJ</option>
+                        <option value="Comisión Nacional por los ODS - DNPJ">Comisión Nacional por los ODS - DNPJ</option>
+                        <option value="Dirección Nacional de Desarrollo Institucional">Dirección Nacional de Desarrollo Institucional</option>
+                        <option value="Comisión Nacional de Crecimiento - DNDI">Comisión Nacional de Crecimiento - DNDI</option>
+                        <option value="Comisión Internacional - DNDI">Comisión Internacional - DNDI</option>
+                        <option value="Comisión Nacional de A salvo del Peligro - DNDI">Comisión Nacional de A salvo del Peligro - DNDI</option>
+                        <option value="Comisión Nacional de Gestión del Riesgo - DNDI">Comisión Nacional de Gestión del Riesgo - DNDI</option>
+                        <option value="Comisión Nacional de Innovación Digital - DNDI">Comisión Nacional de Innovación Digital - DNDI</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="cerrarModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg transition cursor-pointer">Cancelar</button>
+                <button id="btn-guardar" onclick="guardar()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition cursor-pointer">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ PEGA AQUÍ TU URL DE IMPLEMENTACIÓN WEB DE GOOGLE APPS SCRIPT
+        const API_URL = "https://script.google.com/macros/s/TU_ID_DE_IMPLEMENTACION_AQUI/exec";
+
+        let globalActividades = [];
+        let mesActual = 0; 
+        const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+        const festivos2027 = {
+            "2027-01-01": "Año Nuevo", "2027-01-11": "Reyes Magos", "2027-03-22": "San José",
+            "2027-03-26": "Viernes Santo", "2027-05-01": "Día del Trabajo", "2027-05-17": "Ascensión del Señor",
+            "2027-06-07": "Corpus Christi", "2027-06-14": "Sagrado Corazón", "2027-07-05": "San Pedro y San Pablo",
+            "2027-07-20": "Independencia", "2027-08-07": "Batalla de Boyacá", "2027-08-16": "La Asunción",
+            "2027-10-18": "Día de la Raza", "2027-11-01": "Todos los Santos", "2027-11-15": "Indep. Cartagena",
+            "2027-12-08": "Inmaculada", "2027-12-25": "Navidad"
+        };
+
+        window.onload = function() {
+            cargarDatos();
+        };
+
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = mensaje;
+            toast.classList.remove('translate-y-[-150%]', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-150%]', 'opacity-0');
+            }, 3000);
+        }
+
+        async function llamarAPI(payload) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+                return await response.json();
+            } catch (err) {
+                throw new Error("Error de conexión con Google Sheets");
+            }
+        }
+
+        async function cargarDatos() {
+            try {
+                const res = await llamarAPI({ accion: "getActividades" });
+                if (res.status === "success") {
+                    globalActividades = res.data;
+                    renderizarLista(globalActividades);
+                    renderizarCalendarioMes();
+                } else {
+                    mostrarToast("Error: " + res.message);
+                }
+            } catch (err) {
+                mostrarToast(err.message);
+            }
+        }
+
+        function cambiarMes(dir) {
+            mesActual += dir;
+            if (mesActual > 11) mesActual = 0;
+            if (mesActual < 0) mesActual = 11;
+            renderizarCalendarioMes();
+        }
+
+        function aplicarFiltrosLista() {
+            const query = document.getElementById('busqueda').value.toLowerCase();
+            const direccionSelect = document.getElementById('filtro-direccion').value;
+
+            const filtradas = globalActividades.filter(item => {
+                const matchTexto = item.actividad.toLowerCase().includes(query) || 
+                                   item.direccion.toLowerCase().includes(query) ||
+                                   item.fechaInicio.includes(query) ||
+                                   item.fechaFin.includes(query);
+                const matchDireccion = direccionSelect === "" || item.direccion === direccionSelect;
+                return matchTexto && matchDireccion;
+            });
+
+            renderizarLista(filtradas);
+        }
+
+        function renderizarCalendarioMes() {
+            document.getElementById('mes-titulo').innerText = `${nombresMeses[mesActual]} 2027`;
+            const tbody = document.getElementById('calendario-grid');
+            tbody.innerHTML = '';
+
+            const year = 2027;
+            const month = mesActual; 
+            
+            let primerDiaIndex = new Date(year, month, 1).getDay();
+            primerDiaIndex = (primerDiaIndex === 0) ? 6 : primerDiaIndex - 1;
+            
+            const totalDias = new Date(year, month + 1, 0).getDate();
+
+            let fila = document.createElement('tr');
+            fila.className = "h-24";
+
+            for (let i = 0; i < primerDiaIndex; i++) {
+                const td = document.createElement('td');
+                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top";
+                fila.appendChild(td);
+            }
+
+            let diaSemanaActual = primerDiaIndex;
+
+            for (let dia = 1; dia <= totalDias; dia++) {
+                if (diaSemanaActual > 6) {
+                    tbody.appendChild(fila);
+                    fila = document.createElement('tr');
+                    fila.className = "h-24";
+                    diaSemanaActual = 0;
+                }
+
+                const mesStr = String(month + 1).padStart(2, '0');
+                const diaStr = String(dia).padStart(2, '0');
+                const fechaYMD = `${year}-${mesStr}-${diaStr}`;
+
+                const esFestivo = festivos2027[fechaYMD] !== undefined;
+                const tdClass = esFestivo ? "border border-slate-200 p-1.5 align-top relative dia-festivo overflow-hidden" : "border border-slate-200 p-1.5 align-top relative bg-white overflow-hidden";
+
+                const td = document.createElement('td');
+                td.className = tdClass;
+                
+                let contenidoHtml = `<div class="font-bold text-slate-700 text-xs mb-1 flex justify-between"><span>${dia}</span>`;
+                if (esFestivo) {
+                    contenidoHtml += `<span class="text-[9px] text-emerald-900 font-bold" title="${festivos2027[fechaYMD]}"><i class="fa-solid fa-star text-[8px]"></i></span>`;
+                }
+                contenidoHtml += `</div><div class="space-y-1 overflow-y-auto max-h-16">`;
+
+                const actsDia = globalActividades.filter(a => fechaYMD >= a.fechaInicio && fechaYMD <= a.fechaFin);
+                actsDia.forEach(act => {
+                    let badgeClass = 'badge-default';
+                    const d = act.direccion;
+                    if (d.includes('Consejo')) badgeClass = 'badge-consejo';
+                    else if (d.includes('Corte')) badgeClass = 'badge-corte';
+                    else if (d.includes('Jefatura')) badgeClass = 'badge-jefatura';
+                    else if (d.includes('Cancillería')) badgeClass = 'badge-cancilleria';
+                    else if (d.includes('Vigilancia')) badgeClass = 'badge-vigilancia';
+                    else if (d.includes('Administrativa')) badgeClass = 'badge-administrativa';
+                    else if (d.includes('Comunicaciones')) badgeClass = 'badge-comunicaciones';
+                    else if (d.includes('DNAM')) badgeClass = 'badge-dnam';
+                    else if (d.includes('DNPJ')) badgeClass = 'badge-dnpj';
+                    else if (d.includes('DNDI')) badgeClass = 'badge-dndi';
+
+                    contenidoHtml += `<div class="p-1 rounded text-[10px] leading-tight ${badgeClass} font-medium" title="${act.direccion}: ${act.actividad}">
+                        <strong class="block truncate">${act.direccion.split(' - ')[0]}</strong>
+                        <span class="truncate block">${act.actividad}</span>
+                    </div>`;
+                });
+
+                contenidoHtml += `</div>`;
+                td.innerHTML = contenidoHtml;
+                fila.appendChild(td);
+
+                diaSemanaActual++;
+            }
+
+            while (diaSemanaActual <= 6 && diaSemanaActual > 0) {
+                const td = document.createElement('td');
+                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top";
+                fila.appendChild(td);
+                diaSemanaActual++;
+            }
+            tbody.appendChild(fila);
+        }
+
+        function renderizarLista(data) {
+            const container = document.getElementById('lista-actividades');
+            document.getElementById('total-badge').innerText = data.length;
+            
+            if (data.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-slate-400 text-sm">No hay actividades registradas</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            data.sort((a, b) => new Date(a.fechaInicio) - new Date(b.fechaInicio));
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-lg shadow-xs transition hover:shadow-md bg-emerald-50/80 border-l-4 border-emerald-600 text-emerald-900 flex justify-between items-start`;
+                
+                let etiquetaFechas = item.fechaInicio === item.fechaFin ? item.fechaInicio : `${item.fechaInicio} al ${item.fechaFin}`;
+
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-white text-emerald-900"><i class="fa-regular fa-calendar mr-1"></i>${etiquetaFechas}</span>
+                            <span class="text-xs font-semibold opacity-90">${item.direccion}</span>
+                        </div>
+                        <p class="text-sm font-medium">${item.actividad}</p>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button onclick='editar(${JSON.stringify(item)})' class="p-1.5 hover:bg-emerald-900/10 rounded text-xs cursor-pointer" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="eliminar(${item.id})" class="p-1.5 hover:bg-red-500/10 text-red-600 rounded text-xs cursor-pointer" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function abrirModal() {
+            document.getElementById('modal-titulo').innerText = "Nueva Actividad";
+            document.getElementById('act-id').value = '';
+            document.getElementById('act-fecha-inicio').value = '2027-01-01';
+            document.getElementById('act-fecha-fin').value = '2027-01-01';
+            document.getElementById('act-descripcion').value = '';
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modal').classList.add('flex');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal').classList.remove('flex');
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function editar(item) {
+            document.getElementById('modal-titulo').innerText = "Editar Actividad";
+            document.getElementById('act-id').value = item.id;
+            document.getElementById('act-fecha-inicio').value = item.fechaInicio;
+            document.getElementById('act-fecha-fin').value = item.fechaFin;
+            document.getElementById('act-descripcion').value = item.actividad;
+            document.getElementById('act-direccion').value = item.direccion;
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modal').classList.add('flex');
+        }
+
+        async function guardar() {
+            const id = document.getElementById('act-id').value;
+            const fechaInicio = document.getElementById('act-fecha-inicio').value;
+            const fechaFin = document.getElementById('act-fecha-fin').value || fechaInicio;
+            const actividad = document.getElementById('act-descripcion').value;
+            const direccion = document.getElementById('act-direccion').value;
+
+            if (!fechaInicio || !actividad) {
+                mostrarToast('Complete la fecha inicial y la descripción.');
+                return;
+            }
+
+            if (fechaFin < fechaInicio) {
+                mostrarToast('La fecha final no puede ser menor a la inicial.');
+                return;
+            }
+
+            const btn = document.getElementById('btn-guardar');
+            btn.innerText = "Guardando...";
+            btn.disabled = true;
+
+            try {
+                const res = await llamarAPI({
+                    accion: "guardarActividad",
+                    id: id,
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
+                    actividad: actividad,
+                    direccion: direccion
+                });
+
+                btn.innerText = "Guardar";
+                btn.disabled = false;
+
+                if (res.status === "success") {
+                    cerrarModal();
+                    cargarDatos();
+                    mostrarToast(res.message);
+                } else {
+                    mostrarToast("Error: " + res.message);
+                }
+            } catch (err) {
+                btn.innerText = "Guardar";
+                btn.disabled = false;
+                mostrarToast(err.message);
+            }
+        }
+
+        function eliminar(id) {
+            document.getElementById('delete-id').value = id;
+            document.getElementById('modal-confirmacion').classList.remove('hidden');
+            document.getElementById('modal-confirmacion').classList.add('flex');
+        }
+
+        function cerrarModalConfirmacion() {
+            document.getElementById('modal-confirmacion').classList.remove('flex');
+            document.getElementById('modal-confirmacion').classList.add('hidden');
+        }
+
+        async function ejecutarEliminacion() {
+            const id = document.getElementById('delete-id').value;
+            cerrarModalConfirmacion();
+
+            try {
+                const res = await llamarAPI({
+                    accion: "eliminarActividad",
+                    id: id
+                });
+
+                if (res.status === "success") {
+                    cargarDatos();
+                    mostrarToast(res.message);
+                } else {
+                    mostrarToast("Error: " + res.message);
+                }
+            } catch (err) {
+                mostrarToast(err.message);
+            }
+        }
+
+        function verHojaCalculo() {
+            window.open('https://docs.google.com/spreadsheets/d/1YwwYnV-4GgOoAURLXhU5epaBtzV84MJ0AAHqtZNl0lc/preview', '_blank');
+        }
+    </script>
+</body>
+</html>
