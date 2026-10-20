@@ -254,7 +254,6 @@
     </div>
 
     <script>
-        // Tu API oficial integrada directamente
         const API_URL = "https://script.google.com/macros/s/AKfycbyTO-v5ecLJH45GmVBdE95ekNZW0fK9GXJHsI3QG7Rvju1VUNuW_MDitfUgsz01GWM0/exec";
 
         let globalActividades = [];
@@ -379,11 +378,11 @@
             const totalDias = new Date(year, month + 1, 0).getDate();
 
             let fila = document.createElement('tr');
-            fila.className = "h-[13vh]";
+            // Altura flexible para adaptarse al texto completo sin recortar
 
             for (let i = 0; i < primerDiaIndex; i++) {
                 const td = document.createElement('td');
-                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] overflow-hidden";
+                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] h-[120px]";
                 fila.appendChild(td);
             }
 
@@ -393,7 +392,6 @@
                 if (diaSemanaActual > 6) {
                     tbody.appendChild(fila);
                     fila = document.createElement('tr');
-                    fila.className = "h-[13vh]";
                     diaSemanaActual = 0;
                 }
 
@@ -402,24 +400,25 @@
                 const fechaYMD = `${year}-${mesStr}-${diaStr}`;
 
                 const esFestivo = festivos2027[fechaYMD] !== undefined;
-                const tdClass = esFestivo ? "border border-slate-200 p-1 align-top relative dia-festivo w-[14.28%] overflow-hidden" : "border border-slate-200 p-1 align-top relative bg-white w-[14.28%] overflow-hidden";
+                const tdClass = esFestivo ? "border border-slate-200 p-1.5 align-top relative dia-festivo w-[14.28%] h-[120px] overflow-y-auto" : "border border-slate-200 p-1.5 align-top relative bg-white w-[14.28%] h-[120px] overflow-y-auto";
 
                 const td = document.createElement('td');
                 td.className = tdClass;
                 
-                let contenidoHtml = `<div class="font-bold text-slate-700 text-xs mb-0.5 flex justify-between shrink-0"><span>${dia}</span>`;
+                let contenidoHtml = `<div class="font-bold text-slate-700 text-xs mb-1 flex justify-between sticky top-0 bg-inherit z-10"><span>${dia}</span>`;
                 if (esFestivo) {
                     contenidoHtml += `<span class="text-[9px] text-emerald-900 font-bold" title="${festivos2027[fechaYMD]}"><i class="fa-solid fa-star text-[8px]"></i></span>`;
                 }
-                contenidoHtml += `</div><div class="space-y-1 overflow-y-auto max-h-[9vh] pr-0.5">`;
+                contenidoHtml += `</div><div class="space-y-1.5">`;
 
                 const actsDia = globalActividades.filter(a => fechaYMD >= a.fechaInicio && fechaYMD <= a.fechaFin);
                 actsDia.forEach(act => {
                     const badgeClass = obtenerClaseBadge(act.direccion);
                     const depCorta = act.direccion.split(' - ')[0];
-                    contenidoHtml += `<div class="p-1 rounded text-[10px] leading-tight ${badgeClass} font-medium overflow-hidden" title="${act.direccion}: ${act.actividad}">
-                        <strong class="block truncate">${depCorta}</strong>
-                        <span class="block truncate">${act.actividad}</span>
+                    // Texto completo con salto de línea automático y sin desbordarse
+                    contenidoHtml += `<div class="p-1.5 rounded text-[10px] leading-tight ${badgeClass} font-medium whitespace-normal break-words shadow-2xs" title="${act.direccion}: ${act.actividad}">
+                        <strong class="block font-bold">${depCorta}</strong>
+                        <span class="block">${act.actividad}</span>
                     </div>`;
                 });
 
@@ -432,7 +431,7 @@
 
             while (diaSemanaActual <= 6 && diaSemanaActual > 0) {
                 const td = document.createElement('td');
-                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] overflow-hidden";
+                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] h-[120px]";
                 fila.appendChild(td);
                 diaSemanaActual++;
             }
@@ -458,10 +457,10 @@
                 let etiquetaFechas = item.fechaInicio === item.fechaFin ? item.fechaInicio : `${item.fechaInicio} al ${item.fechaFin}`;
 
                 card.innerHTML = `
-                    <div class="space-y-1 overflow-hidden pr-2">
+                    <div class="space-y-1 pr-2">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-xs font-bold px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700"><i class="fa-regular fa-calendar mr-1"></i>${etiquetaFechas}</span>
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded ${obtenerClaseBadge(item.direccion)} truncate max-w-[250px]">${item.direccion}</span>
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded ${obtenerClaseBadge(item.direccion)}">${item.direccion}</span>
                         </div>
                         <p class="text-sm font-medium mt-1 text-slate-800 break-words">${item.actividad}</p>
                     </div>
@@ -537,7 +536,6 @@
                 if (res.status === "success") {
                     cerrarModal();
                     mostrarToast(res.message);
-                    // Actualización ultrarrápida local y recarga en segundo plano
                     cargarDatos();
                 } else {
                     mostrarToast("Error: " + res.message);
