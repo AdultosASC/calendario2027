@@ -270,12 +270,27 @@
         const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
         const festivos2027 = {
-            "2027-01-01": "Año Nuevo", "2027-01-11": "Reyes Magos", "2027-03-22": "San José", "2027-03-25": "Jueves Santo"
-            "2027-03-26": "Viernes Santo", "2027-05-01": "Día del Trabajo", "2027-05-10": "Ascensión del Señor",
-            "2027-05-31": "Corpus Christi", "2027-06-7": "Sagrado Corazón", "2027-07-05": "San Pedro y San Pablo", "2027-07-12": "Chiquinquira",
-            "2027-07-20": "Independencia", "2027-08-07": "Batalla de Boyacá", "2027-08-16": "La Asunción",
-            "2027-10-18": "Día de la Raza", "2027-11-01": "Todos los Santos", "2027-11-15": "Indep. Cartagena",
-            "2027-12-08": "Inmaculada", "2027-12-25": "Navidad"
+            "2027-01-01": "Año Nuevo",
+            "2027-01-11": "Día de los Reyes Magos",
+            "2027-03-21": "Domingo de Ramos",
+            "2027-03-22": "Día de San José",
+            "2027-03-25": "Jueves Santo",
+            "2027-03-26": "Viernes Santo",
+            "2027-03-28": "Domingo de Resurrección",
+            "2027-05-01": "Día del Trabajo",
+            "2027-05-10": "Día de la Ascensión",
+            "2027-05-31": "Corpus Christi",
+            "2027-06-07": "Sagrado Corazón",
+            "2027-07-05": "San Pedro y San Pablo",
+            "2027-07-12": "Día de Nuestra Señora del Rosario de Chiquinquirá",
+            "2027-07-20": "Día de la Independencia",
+            "2027-08-07": "Batalla de Boyacá",
+            "2027-08-16": "La asunción de la Virgen",
+            "2027-10-18": "Día de la Raza",
+            "2027-11-01": "Todos los Santos",
+            "2027-11-15": "Independencia de Cartagena",
+            "2027-12-08": "Día de la Inmaculada Concepción",
+            "2027-12-25": "Día de Navidad"
         };
 
         window.onload = function() {
@@ -422,7 +437,6 @@
                 const actsDia = globalActividades.filter(a => fechaYMD >= a.fechaInicio && fechaYMD <= a.fechaFin);
                 actsDia.forEach(act => {
                     const badgeClass = obtenerClaseBadge(act.direccion);
-                    // Nombre completo sin recortar, organizado en dos líneas legibles dentro de la tarjeta
                     contenidoHtml += `<div class="p-1.5 rounded text-[10px] leading-tight ${badgeClass} font-medium whitespace-normal break-words shadow-2xs">
                         <strong class="block font-bold">${act.direccion}</strong>
                         <span class="block mt-0.5">${act.actividad}</span>
