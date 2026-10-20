@@ -96,7 +96,7 @@
                 </table>
             </div>
 
-            <!-- Leyenda Detallada por Colores y Comisiones (Actualizada) -->
+            <!-- Leyenda Detallada por Colores y Comisiones -->
             <div class="mt-4 pt-3 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 text-[11px] text-slate-700 shrink-0">
                 <div class="p-2 rounded bg-purple-50 border border-purple-200">
                     <span class="font-bold text-purple-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block"></span> Estamentos - Administración</span>
@@ -117,7 +117,7 @@
                     </ul>
                 </div>
                 <div class="p-2 rounded bg-red-50 border border-red-200">
-                    <span class="font-bold text-red-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span> Dirección de Adultos (DNAM)</span>
+                    <span class="font-bold text-red-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span> Dirección Nacional de Adultos en el Movimiento</span>
                     <ul class="list-disc list-inside space-y-0.5 text-[10px] text-red-950">
                         <li>Dirección Nacional de Adultos en el Movimiento</li>
                         <li>Comisión Nacional de Atracción y Vinculación</li>
@@ -127,7 +127,7 @@
                     </ul>
                 </div>
                 <div class="p-2 rounded bg-lime-50 border border-lime-200">
-                    <span class="font-bold text-lime-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-lime-500 inline-block"></span> Dirección de Programa (DNPJ)</span>
+                    <span class="font-bold text-lime-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-lime-500 inline-block"></span> Dirección Nacional de Programa de Jóvenes</span>
                     <ul class="list-disc list-inside space-y-0.5 text-[10px] text-lime-950">
                         <li>Dirección Nacional de Programa de Jóvenes</li>
                         <li>Comisión Nacional para Cachorros</li>
@@ -139,7 +139,7 @@
                     </ul>
                 </div>
                 <div class="p-2 rounded bg-sky-50 border border-sky-200">
-                    <span class="font-bold text-sky-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Dirección de Desarrollo (DNDI)</span>
+                    <span class="font-bold text-sky-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Dirección Nacional de Desarrollo Institucional</span>
                     <ul class="list-disc list-inside space-y-0.5 text-[10px] text-sky-950">
                         <li>Dirección Nacional de Desarrollo Institucional</li>
                         <li>Comisión Nacional de Crecimiento</li>
@@ -370,9 +370,9 @@
             const d = direccion;
             if (d.includes('Consejo Scout Nacional') || d.includes('Corte de Honor Nacional') || d.includes('Comisión Nacional de Vigilancia y Control') || d.includes('Dirección Nacional Administrativa') || d.includes('Comisión Nacional de Calidad')) return 'badge-morado';
             if (d.includes('Jefatura Scout Nacional') || d.includes('Dirección Nacional de Comunicaciones') || d.includes('Cancillería Nacional')) return 'badge-verde';
-            if (d.includes('Adultos') || d.includes('Atracción') || d.includes('Acompañamiento') || d.includes('Formación') || d.includes('Bienestar')) return 'badge-rojo';
-            if (d.includes('Programa') || d.includes('Cachorros') || d.includes('Lobatos') || d.includes('Scouts') || d.includes('Nomadas') || d.includes('Rovers') || d.includes('ODS')) return 'badge-limon';
-            if (d.includes('Desarrollo') || d.includes('Crecimiento') || d.includes('Internacional') || d.includes('Peligro') || d.includes('Riesgo') || d.includes('Digital')) return 'badge-celeste';
+            if (d.includes('Dirección Nacional de Adultos en el Movimiento') || d.includes('Comisión Nacional de Atracción y Vinculación') || d.includes('Comisión Nacional de Evaluación y Acompañamiento') || d.includes('Comisión Nacional de Formación') || d.includes('Comisión Nacional de Bienestar')) return 'badge-rojo';
+            if (d.includes('Dirección Nacional de Programa de Jóvenes') || d.includes('Comisión Nacional para Cachorros') || d.includes('Comisión Nacional para Lobatos') || d.includes('Comisión Nacional para Scouts') || d.includes('Comisión Nacional para Nomadas Scout') || d.includes('Comisión Nacional para Rovers') || d.includes('Comisión Nacional por los ODS')) return 'badge-limon';
+            if (d.includes('Dirección Nacional de Desarrollo Institucional') || d.includes('Comisión Nacional de Crecimiento') || d.includes('Comisión Internacional') || d.includes('Comisión Nacional de A salvo del Peligro') || d.includes('Comisión Nacional de Gestión del Riesgo') || d.includes('Comisión Nacional de Innovación Digital')) return 'badge-celeste';
             return 'badge-default';
         }
 
@@ -393,7 +393,7 @@
 
             for (let i = 0; i < primerDiaIndex; i++) {
                 const td = document.createElement('td');
-                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] h-[120px]";
+                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] min-h-[140px]";
                 fila.appendChild(td);
             }
 
@@ -411,7 +411,7 @@
                 const fechaYMD = `${year}-${mesStr}-${diaStr}`;
 
                 const esFestivo = festivos2027[fechaYMD] !== undefined;
-                const tdClass = esFestivo ? "border border-slate-200 p-1.5 align-top relative dia-festivo w-[14.28%] h-[120px] overflow-y-auto" : "border border-slate-200 p-1.5 align-top relative bg-white w-[14.28%] h-[120px] overflow-y-auto";
+                const tdClass = esFestivo ? "border border-slate-200 p-1.5 align-top relative dia-festivo w-[14.28%] min-h-[140px] h-auto" : "border border-slate-200 p-1.5 align-top relative bg-white w-[14.28%] min-h-[140px] h-auto";
 
                 const td = document.createElement('td');
                 td.className = tdClass;
@@ -420,18 +420,15 @@
                 if (esFestivo) {
                     contenidoHtml += `<span class="text-[9px] text-emerald-900 font-bold" title="${festivos2027[fechaYMD]}"><i class="fa-solid fa-star text-[8px]"></i></span>`;
                 }
-                contenidoHtml += `</div><div class="space-y-1.5">`;
+                contenidoHtml += `</div><div class="space-y-1.5 pb-2">`;
 
                 const actsDia = globalActividades.filter(a => fechaYMD >= a.fechaInicio && fechaYMD <= a.fechaFin);
                 actsDia.forEach(act => {
                     const badgeClass = obtenerClaseBadge(act.direccion);
-                    // Nombre corto automático optimizado para mostrarse limpio en el calendario
-                    let depCorta = act.direccion.replace("Comisión Nacional de ", "").replace("Comisión Nacional ", "").replace("Dirección Nacional de ", "Dir. ").replace("Dirección Nacional ", "Dir. ");
-                    if (depCorta.length > 22) depCorta = depCorta.substring(0, 20) + "..";
-
-                    contenidoHtml += `<div class="p-1.5 rounded text-[10px] leading-tight ${badgeClass} font-medium whitespace-normal break-words shadow-2xs" title="${act.direccion}: ${act.actividad}">
-                        <strong class="block font-bold">${depCorta}</strong>
-                        <span class="block">${act.actividad}</span>
+                    // Nombre completo sin recortar, organizado en dos líneas legibles dentro de la tarjeta
+                    contenidoHtml += `<div class="p-1.5 rounded text-[10px] leading-tight ${badgeClass} font-medium whitespace-normal break-words shadow-2xs">
+                        <strong class="block font-bold">${act.direccion}</strong>
+                        <span class="block mt-0.5">${act.actividad}</span>
                     </div>`;
                 });
 
@@ -444,7 +441,7 @@
 
             while (diaSemanaActual <= 6 && diaSemanaActual > 0) {
                 const td = document.createElement('td');
-                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] h-[120px]";
+                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] min-h-[140px]";
                 fila.appendChild(td);
                 diaSemanaActual++;
             }
