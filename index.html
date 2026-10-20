@@ -7,13 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Nuevas reglas de colores especificadas */
         .badge-morado { background-color: #f3e8ff; color: #6b21a8; border-left: 3px solid #9333ea; }
         .badge-verde { background-color: #dcfce7; color: #166534; border-left: 3px solid #16a34a; }
         .badge-rojo { background-color: #fee2e2; color: #991b1b; border-left: 3px solid #dc2626; }
         .badge-limon { background-color: #ecfccb; color: #3f6212; border-left: 3px solid #84cc16; }
         .badge-celeste { background-color: #e0f2fe; color: #0369a1; border-left: 3px solid #0284c7; }
-        
         .badge-default { background-color: #f1f5f9; color: #334155; border-left: 3px solid #64748b; }
         .dia-festivo { background-color: #a7f3d0 !important; }
     </style>
@@ -25,6 +23,7 @@
         <span id="toast-msg">Mensaje</span>
     </div>
 
+    <!-- Modal de Confirmación de Eliminación -->
     <div id="modal-confirmacion" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 text-center relative">
             <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-3 text-xl">
@@ -40,42 +39,92 @@
         </div>
     </div>
 
+    <!-- Barra de Navegación Superior Unificada -->
     <header class="bg-emerald-900 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-shield-halved text-3xl text-emerald-400"></i>
                 <div>
                     <h1 class="text-xl font-bold">Calendario Colombia 2027 - Scout</h1>
-                    <p class="text-xs text-emerald-200">Alojado en GitHub & Sincronizado con Google Sheets</p>
+                    <p class="text-xs text-emerald-200">Gestión Institucional</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="verHojaCalculo()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer">
-                    <i class="fa-solid fa-file-excel"></i> Ver Hoja (Solo Lectura)
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Botones de Navegación de Ventanas -->
+                <button id="btn-tab-calendario" onclick="cambiarVista('calendario')" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600">
+                    <i class="fa-solid fa-calendar-days"></i> Calendario
                 </button>
-                <button onclick="abrirModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer">
+                <button id="btn-tab-actividades" onclick="cambiarVista('actividades')" class="bg-emerald-950 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800">
+                    <i class="fa-solid fa-list-check"></i> Actividades Registradas
+                </button>
+                <button onclick="abrirModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer">
                     <i class="fa-solid fa-plus"></i> Nueva Actividad
+                </button>
+                <button onclick="verHojaCalculo()" class="bg-emerald-800 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer">
+                    <i class="fa-solid fa-file-excel"></i> Ver Hoja
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <main class="max-w-7xl mx-auto px-4 py-6">
         
-        <section class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col h-[82vh]">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="font-bold text-slate-800 text-base">Actividades Registradas</h2>
-                <span id="total-badge" class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">0</span>
-            </div>
-            
-            <div class="mb-2">
-                <input type="text" id="busqueda" placeholder="Buscar actividad..." onkeyup="aplicarFiltrosLista()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <!-- VISTA 1: CALENDAR (Por defecto al ingresar) -->
+        <section id="vista-calendario" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-center mb-4 bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                    <button onclick="cambiarMes(-1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
+                        <i class="fa-solid fa-chevron-left mr-1"></i> Mes Anterior
+                    </button>
+                    <h2 id="mes-titulo" class="font-bold text-emerald-900 text-lg uppercase tracking-wide">Enero 2027</h2>
+                    <button onclick="cambiarMes(1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
+                        Mes Siguiente <i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-slate-200 text-xs">
+                        <thead>
+                            <tr class="bg-emerald-800 text-white text-center">
+                                <th class="border border-slate-300 py-2.5 w-[14%]">Lunes</th>
+                                <th class="border border-slate-300 py-2.5 w-[14%]">Martes</th>
+                                <th class="border border-slate-300 py-2.5 w-[14%]">Miércoles</th>
+                                <th class="border border-slate-300 py-2.5 w-[14%]">Jueves</th>
+                                <th class="border border-slate-300 py-2.5 w-[14%]">Viernes</th>
+                                <th class="border border-slate-300 py-2.5 w-[14%]">Sábado</th>
+                                <th class="border border-slate-300 py-2.5 w-[14%]">Domingo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendario-grid"></tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- Lista actualizada con las direcciones y comisiones seleccionadas -->
-            <div class="mb-3">
+            <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-3 items-center justify-center text-[11px] text-slate-600">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block"></span> Morado</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-green-600 inline-block"></span> Verde</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span> Rojo</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-lime-500 inline-block"></span> Verde Lima</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Azul Celeste</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-300 inline-block border border-emerald-400"></span> Día Festivo</span>
+            </div>
+        </section>
+
+        <!-- VISTA 2: ACTIVIDADES REGISTRADAS (Ventana independiente) -->
+        <section id="vista-actividades" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hidden flex flex-col min-h-[75vh]">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-6">
+                <div>
+                    <h2 class="font-bold text-slate-800 text-lg">Listado General de Actividades</h2>
+                    <p class="text-xs text-slate-500">Gestión, filtrado y control de eventos institucionales</p>
+                </div>
+                <span id="total-badge" class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full">0 Actividades</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <input type="text" id="busqueda" placeholder="Buscar por actividad o fecha..." onkeyup="aplicarFiltrosLista()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                
                 <select id="filtro-direccion" onchange="aplicarFiltrosLista()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
-                    <option value="">-- Filtrar Lista por Dirección o Comisión --</option>
+                    <option value="">-- Filtrar por Dirección o Comisión --</option>
                     <option value="Consejo Scout Nacional">Consejo Scout Nacional</option>
                     <option value="Corte de Honor Nacional">Corte de Honor Nacional</option>
                     <option value="Comisión Nacional de Vigilancia y Control">Comisión Nacional de Vigilancia y Control</option>
@@ -102,54 +151,13 @@
                 </select>
             </div>
 
-            <div id="lista-actividades" class="overflow-y-auto flex-1 space-y-3 pr-1">
+            <div id="lista-actividades" class="overflow-y-auto flex-1 space-y-3 pr-1 max-h-[60vh]">
                 <div class="text-center py-10 text-slate-400 text-sm">Cargando actividades...</div>
-            </div>
-        </section>
-
-        <section class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
-            <div>
-                <div class="flex justify-between items-center mb-4 bg-emerald-50 p-3 rounded-lg border border-emerald-100">
-                    <button onclick="cambiarMes(-1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
-                        <i class="fa-solid fa-chevron-left mr-1"></i> Mes Anterior
-                    </button>
-                    <h2 id="mes-titulo" class="font-bold text-emerald-900 text-lg uppercase tracking-wide">Enero 2027</h2>
-                    <button onclick="cambiarMes(1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
-                        Mes Siguiente <i class="fa-solid fa-chevron-right ml-1"></i>
-                    </button>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full border-collapse border border-slate-200 text-xs">
-                        <thead>
-                            <tr class="bg-emerald-800 text-white text-center">
-                                <th class="border border-slate-300 py-2 w-[14%]">Lunes</th>
-                                <th class="border border-slate-300 py-2 w-[14%]">Martes</th>
-                                <th class="border border-slate-300 py-2 w-[14%]">Miércoles</th>
-                                <th class="border border-slate-300 py-2 w-[14%]">Jueves</th>
-                                <th class="border border-slate-300 py-2 w-[14%]">Viernes</th>
-                                <th class="border border-slate-300 py-2 w-[14%]">Sábado</th>
-                                <th class="border border-slate-300 py-2 w-[14%]">Domingo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="calendario-grid"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Leyenda de colores actualizada -->
-            <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-3 items-center justify-center text-[11px] text-slate-600">
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block"></span> Morado</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-green-600 inline-block"></span> Verde</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span> Rojo</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-lime-500 inline-block"></span> Verde Lima</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Azul Celeste</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-300 inline-block border border-emerald-400"></span> Día Festivo</span>
             </div>
         </section>
     </main>
 
-    <!-- Modal con las opciones actualizadas -->
+    <!-- Modal para Nueva / Editar Actividad -->
     <div id="modal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative">
             <h3 id="modal-titulo" class="text-lg font-bold text-slate-800 mb-4">Nueva Actividad</h3>
@@ -206,7 +214,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/TU_ID_DE_IMPLEMENTACION_AQUI/exec"; // Reemplaza por tu URL de Google Apps Script
+        const API_URL = "https://script.google.com/macros/s/TU_ID_DE_IMPLEMENTACION_AQUI/exec"; // Reemplaza por tu URL
 
         let globalActividades = [];
         let mesActual = 0; 
@@ -224,6 +232,25 @@
         window.onload = function() {
             cargarDatos();
         };
+
+        function cambiarVista(vista) {
+            const secCal = document.getElementById('vista-calendario');
+            const secAct = document.getElementById('vista-actividades');
+            const btnCal = document.getElementById('btn-tab-calendario');
+            const btnAct = document.getElementById('btn-tab-actividades');
+
+            if (vista === 'calendario') {
+                secCal.classList.remove('hidden');
+                secAct.classList.add('hidden');
+                btnCal.className = "bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600";
+                btnAct.className = "bg-emerald-950 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800";
+            } else {
+                secCal.classList.add('hidden');
+                secAct.classList.remove('hidden');
+                btnAct.className = "bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600";
+                btnCal.className = "bg-emerald-950 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800";
+            }
+        }
 
         function mostrarToast(mensaje) {
             const toast = document.getElementById('toast');
@@ -289,32 +316,11 @@
 
         function obtenerClaseBadge(direccion) {
             const d = direccion;
-            // GRUPO MORADO
-            if (d.includes('Consejo Scout Nacional') || 
-                d.includes('Corte de Honor Nacional') || 
-                d.includes('Comisión Nacional de Vigilancia y Control') || 
-                d.includes('Dirección Nacional Administrativa') || 
-                d.includes('Comisión Nacional de Calidad')) {
-                return 'badge-morado';
-            }
-            // GRUPO VERDE
-            if (d.includes('Jefatura Scout Nacional') || 
-                d.includes('Dirección Nacional de Comunicaciones') || 
-                d.includes('Cancillería Nacional')) {
-                return 'badge-verde';
-            }
-            // GRUPO ROJO
-            if (d.includes('DNAM')) {
-                return 'badge-rojo';
-            }
-            // GRUPO VERDE LIMA
-            if (d.includes('DNPJ')) {
-                return 'badge-limon';
-            }
-            // GRUPO AZUL CELESTE
-            if (d.includes('DNDI') || d.includes('Comisión Internacional')) {
-                return 'badge-celeste';
-            }
+            if (d.includes('Consejo Scout Nacional') || d.includes('Corte de Honor Nacional') || d.includes('Comisión Nacional de Vigilancia y Control') || d.includes('Dirección Nacional Administrativa') || d.includes('Comisión Nacional de Calidad')) return 'badge-morado';
+            if (d.includes('Jefatura Scout Nacional') || d.includes('Dirección Nacional de Comunicaciones') || d.includes('Cancillería Nacional')) return 'badge-verde';
+            if (d.includes('DNAM')) return 'badge-rojo';
+            if (d.includes('DNPJ')) return 'badge-limon';
+            if (d.includes('DNDI') || d.includes('Comisión Internacional')) return 'badge-celeste';
             return 'badge-default';
         }
 
@@ -332,7 +338,7 @@
             const totalDias = new Date(year, month + 1, 0).getDate();
 
             let fila = document.createElement('tr');
-            fila.className = "h-24";
+            fila.className = "h-28";
 
             for (let i = 0; i < primerDiaIndex; i++) {
                 const td = document.createElement('td');
@@ -346,7 +352,7 @@
                 if (diaSemanaActual > 6) {
                     tbody.appendChild(fila);
                     fila = document.createElement('tr');
-                    fila.className = "h-24";
+                    fila.className = "h-28";
                     diaSemanaActual = 0;
                 }
 
@@ -364,7 +370,7 @@
                 if (esFestivo) {
                     contenidoHtml += `<span class="text-[9px] text-emerald-900 font-bold" title="${festivos2027[fechaYMD]}"><i class="fa-solid fa-star text-[8px]"></i></span>`;
                 }
-                contenidoHtml += `</div><div class="space-y-1 overflow-y-auto max-h-16">`;
+                contenidoHtml += `</div><div class="space-y-1 overflow-y-auto max-h-20">`;
 
                 const actsDia = globalActividades.filter(a => fechaYMD >= a.fechaInicio && fechaYMD <= a.fechaFin);
                 actsDia.forEach(act => {
@@ -393,7 +399,7 @@
 
         function renderizarLista(data) {
             const container = document.getElementById('lista-actividades');
-            document.getElementById('total-badge').innerText = data.length;
+            document.getElementById('total-badge').innerText = `${data.length} Actividades`;
             
             if (data.length === 0) {
                 container.innerHTML = `<div class="text-center py-10 text-slate-400 text-sm">No hay actividades registradas</div>`;
