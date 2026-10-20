@@ -16,7 +16,7 @@
         .dia-festivo { background-color: #a7f3d0 !important; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans min-h-screen">
+<body class="bg-slate-50 font-sans min-h-screen flex flex-col">
 
     <div id="toast" class="fixed top-5 right-5 z-50 bg-emerald-800 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium transition-all duration-300 transform translate-y-[-150%] opacity-0 flex items-center gap-2">
         <i class="fa-solid fa-circle-check text-emerald-400"></i>
@@ -40,21 +40,22 @@
     </div>
 
     <!-- Barra de Navegación Superior Unificada -->
-    <header class="bg-emerald-900 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+    <header class="bg-emerald-900 text-white shadow-md shrink-0">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-shield-halved text-3xl text-emerald-400"></i>
+                <i class="fa-solid fa-shield-halved text-2xl text-emerald-400"></i>
                 <div>
-                    <h1 class="text-xl font-bold">Calendario Colombia 2027 - Scout</h1>
-                    <p class="text-xs text-emerald-200">Gestión Institucional</p>
+                    <h1 class="text-lg font-bold">Calendario Colombia 2027 - Scout</h1>
+                    <p class="text-[11px] text-emerald-200">Gestión Institucional</p>
                 </div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-                <!-- Botones de Navegación de Ventanas -->
-                <button id="btn-tab-calendario" onclick="cambiarVista('calendario')" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600">
+                <!-- Botón de Calendario Activo Inicialmente (Color Oscuro) -->
+                <button id="btn-tab-calendario" onclick="cambiarVista('calendario')" class="bg-emerald-950 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800">
                     <i class="fa-solid fa-calendar-days"></i> Calendario
                 </button>
-                <button id="btn-tab-actividades" onclick="cambiarVista('actividades')" class="bg-emerald-950 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800">
+                <!-- Botón de Actividades Inactivo (Color más claro) -->
+                <button id="btn-tab-actividades" onclick="cambiarVista('actividades')" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600">
                     <i class="fa-solid fa-list-check"></i> Actividades Registradas
                 </button>
                 <button onclick="abrirModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer">
@@ -67,40 +68,38 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-6">
+    <main class="max-w-7xl w-full mx-auto px-4 py-4 flex-1 flex flex-col">
         
-        <!-- VISTA 1: CALENDAR (Por defecto al ingresar) -->
-        <section id="vista-calendario" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
-            <div>
-                <div class="flex justify-between items-center mb-4 bg-emerald-50 p-3 rounded-lg border border-emerald-100">
-                    <button onclick="cambiarMes(-1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
-                        <i class="fa-solid fa-chevron-left mr-1"></i> Mes Anterior
-                    </button>
-                    <h2 id="mes-titulo" class="font-bold text-emerald-900 text-lg uppercase tracking-wide">Enero 2027</h2>
-                    <button onclick="cambiarMes(1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
-                        Mes Siguiente <i class="fa-solid fa-chevron-right ml-1"></i>
-                    </button>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full border-collapse border border-slate-200 text-xs">
-                        <thead>
-                            <tr class="bg-emerald-800 text-white text-center">
-                                <th class="border border-slate-300 py-2.5 w-[14%]">Lunes</th>
-                                <th class="border border-slate-300 py-2.5 w-[14%]">Martes</th>
-                                <th class="border border-slate-300 py-2.5 w-[14%]">Miércoles</th>
-                                <th class="border border-slate-300 py-2.5 w-[14%]">Jueves</th>
-                                <th class="border border-slate-300 py-2.5 w-[14%]">Viernes</th>
-                                <th class="border border-slate-300 py-2.5 w-[14%]">Sábado</th>
-                                <th class="border border-slate-300 py-2.5 w-[14%]">Domingo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="calendario-grid"></tbody>
-                    </table>
-                </div>
+        <!-- VISTA 1: CALENDARIO (Tamaño Fijo sin barras de desplazamiento horizontal) -->
+        <section id="vista-calendario" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col flex-1">
+            <div class="flex justify-between items-center mb-3 bg-emerald-50 px-4 py-2.5 rounded-lg border border-emerald-100 shrink-0">
+                <button onclick="cambiarMes(-1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
+                    <i class="fa-solid fa-chevron-left mr-1"></i> Mes Anterior
+                </button>
+                <h2 id="mes-titulo" class="font-bold text-emerald-900 text-base uppercase tracking-wide">Enero 2027</h2>
+                <button onclick="cambiarMes(1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
+                    Mes Siguiente <i class="fa-solid fa-chevron-right ml-1"></i>
+                </button>
             </div>
 
-            <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-3 items-center justify-center text-[11px] text-slate-600">
+            <div class="flex-1 flex flex-col">
+                <table class="w-full table-fixed border-collapse border border-slate-200 text-xs flex-1">
+                    <thead>
+                        <tr class="bg-emerald-800 text-white text-center">
+                            <th class="border border-slate-300 py-2 w-[14.28%]">Lunes</th>
+                            <th class="border border-slate-300 py-2 w-[14.28%]">Martes</th>
+                            <th class="border border-slate-300 py-2 w-[14.28%]">Miércoles</th>
+                            <th class="border border-slate-300 py-2 w-[14.28%]">Jueves</th>
+                            <th class="border border-slate-300 py-2 w-[14.28%]">Viernes</th>
+                            <th class="border border-slate-300 py-2 w-[14.28%]">Sábado</th>
+                            <th class="border border-slate-300 py-2 w-[14.28%]">Domingo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendario-grid" class="h-full"></tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-3 items-center justify-center text-[11px] text-slate-600 shrink-0">
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block"></span> Morado</span>
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-green-600 inline-block"></span> Verde</span>
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span> Rojo</span>
@@ -110,9 +109,9 @@
             </div>
         </section>
 
-        <!-- VISTA 2: ACTIVIDADES REGISTRADAS (Ventana independiente) -->
-        <section id="vista-actividades" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hidden flex flex-col min-h-[75vh]">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-6">
+        <!-- VISTA 2: ACTIVIDADES REGISTRADAS -->
+        <section id="vista-actividades" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hidden flex flex-col flex-1">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4 shrink-0">
                 <div>
                     <h2 class="font-bold text-slate-800 text-lg">Listado General de Actividades</h2>
                     <p class="text-xs text-slate-500">Gestión, filtrado y control de eventos institucionales</p>
@@ -120,7 +119,7 @@
                 <span id="total-badge" class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full">0 Actividades</span>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 shrink-0">
                 <input type="text" id="busqueda" placeholder="Buscar por actividad o fecha..." onkeyup="aplicarFiltrosLista()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 
                 <select id="filtro-direccion" onchange="aplicarFiltrosLista()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
@@ -151,7 +150,7 @@
                 </select>
             </div>
 
-            <div id="lista-actividades" class="overflow-y-auto flex-1 space-y-3 pr-1 max-h-[60vh]">
+            <div id="lista-actividades" class="overflow-y-auto flex-1 space-y-3 pr-1 max-h-[65vh]">
                 <div class="text-center py-10 text-slate-400 text-sm">Cargando actividades...</div>
             </div>
         </section>
@@ -242,13 +241,14 @@
             if (vista === 'calendario') {
                 secCal.classList.remove('hidden');
                 secAct.classList.add('hidden');
-                btnCal.className = "bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600";
-                btnAct.className = "bg-emerald-950 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800";
+                // Estilo botón activo (oscuro) vs inactivo (claro)
+                btnCal.className = "bg-emerald-950 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800";
+                btnAct.className = "bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600";
             } else {
                 secCal.classList.add('hidden');
                 secAct.classList.remove('hidden');
-                btnAct.className = "bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600";
-                btnCal.className = "bg-emerald-950 hover:bg-emerald-800 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800";
+                btnAct.className = "bg-emerald-950 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800";
+                btnCal.className = "bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600";
             }
         }
 
@@ -338,11 +338,11 @@
             const totalDias = new Date(year, month + 1, 0).getDate();
 
             let fila = document.createElement('tr');
-            fila.className = "h-28";
+            fila.className = "h-[14vh]";
 
             for (let i = 0; i < primerDiaIndex; i++) {
                 const td = document.createElement('td');
-                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top";
+                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] overflow-hidden";
                 fila.appendChild(td);
             }
 
@@ -352,7 +352,7 @@
                 if (diaSemanaActual > 6) {
                     tbody.appendChild(fila);
                     fila = document.createElement('tr');
-                    fila.className = "h-28";
+                    fila.className = "h-[14vh]";
                     diaSemanaActual = 0;
                 }
 
@@ -361,21 +361,21 @@
                 const fechaYMD = `${year}-${mesStr}-${diaStr}`;
 
                 const esFestivo = festivos2027[fechaYMD] !== undefined;
-                const tdClass = esFestivo ? "border border-slate-200 p-1.5 align-top relative dia-festivo overflow-hidden" : "border border-slate-200 p-1.5 align-top relative bg-white overflow-hidden";
+                const tdClass = esFestivo ? "border border-slate-200 p-1 align-top relative dia-festivo w-[14.28%] overflow-hidden" : "border border-slate-200 p-1 align-top relative bg-white w-[14.28%] overflow-hidden";
 
                 const td = document.createElement('td');
                 td.className = tdClass;
                 
-                let contenidoHtml = `<div class="font-bold text-slate-700 text-xs mb-1 flex justify-between"><span>${dia}</span>`;
+                let contenidoHtml = `<div class="font-bold text-slate-700 text-xs mb-0.5 flex justify-between"><span>${dia}</span>`;
                 if (esFestivo) {
                     contenidoHtml += `<span class="text-[9px] text-emerald-900 font-bold" title="${festivos2027[fechaYMD]}"><i class="fa-solid fa-star text-[8px]"></i></span>`;
                 }
-                contenidoHtml += `</div><div class="space-y-1 overflow-y-auto max-h-20">`;
+                contenidoHtml += `</div><div class="space-y-1 overflow-y-auto max-h-[10vh] pr-0.5">`;
 
                 const actsDia = globalActividades.filter(a => fechaYMD >= a.fechaInicio && fechaYMD <= a.fechaFin);
                 actsDia.forEach(act => {
                     const badgeClass = obtenerClaseBadge(act.direccion);
-                    contenidoHtml += `<div class="p-1 rounded text-[10px] leading-tight ${badgeClass} font-medium" title="${act.direccion}: ${act.actividad}">
+                    contenidoHtml += `<div class="p-1 rounded text-[10px] leading-tight ${badgeClass} font-medium truncate" title="${act.direccion}: ${act.actividad}">
                         <strong class="block truncate">${act.direccion.split(' - ')[0]}</strong>
                         <span class="truncate block">${act.actividad}</span>
                     </div>`;
@@ -390,7 +390,7 @@
 
             while (diaSemanaActual <= 6 && diaSemanaActual > 0) {
                 const td = document.createElement('td');
-                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top";
+                td.className = "border border-slate-200 bg-slate-50/50 p-1 align-top w-[14.28%] overflow-hidden";
                 fila.appendChild(td);
                 diaSemanaActual++;
             }
