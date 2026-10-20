@@ -7,16 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .badge-consejo { background-color: #fee2e2; color: #991b1b; border-left: 3px solid #ef4444; }
-        .badge-corte { background-color: #f3e8ff; color: #6b21a8; border-left: 3px solid #a855f7; }
-        .badge-jefatura { background-color: #ffedd5; color: #9a3412; border-left: 3px solid #f97316; }
-        .badge-cancilleria { background-color: #fef9c3; color: #854d0e; border-left: 3px solid #eab308; }
-        .badge-vigilancia { background-color: #ccfbf1; color: #115e59; border-left: 3px solid #14b8a6; }
-        .badge-administrativa { background-color: #e0f2fe; color: #0369a1; border-left: 3px solid #0284c7; }
-        .badge-comunicaciones { background-color: #dbeafe; color: #1e40af; border-left: 3px solid #3b82f6; }
-        .badge-dnam { background-color: #d1fae5; color: #065f46; border-left: 3px solid #10b981; }
-        .badge-dnpj { background-color: #ffedd5; color: #c2410c; border-left: 3px solid #fb923c; }
-        .badge-dndi { background-color: #f0fdf4; color: #166534; border-left: 3px solid #22c55e; }
+        /* Nuevas reglas de colores especificadas */
+        .badge-morado { background-color: #f3e8ff; color: #6b21a8; border-left: 3px solid #9333ea; }
+        .badge-verde { background-color: #dcfce7; color: #166534; border-left: 3px solid #16a34a; }
+        .badge-rojo { background-color: #fee2e2; color: #991b1b; border-left: 3px solid #dc2626; }
+        .badge-limon { background-color: #ecfccb; color: #3f6212; border-left: 3px solid #84cc16; }
+        .badge-celeste { background-color: #e0f2fe; color: #0369a1; border-left: 3px solid #0284c7; }
+        
         .badge-default { background-color: #f1f5f9; color: #334155; border-left: 3px solid #64748b; }
         .dia-festivo { background-color: #a7f3d0 !important; }
     </style>
@@ -75,29 +72,28 @@
                 <input type="text" id="busqueda" placeholder="Buscar actividad..." onkeyup="aplicarFiltrosLista()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
 
+            <!-- Lista actualizada con las direcciones y comisiones seleccionadas -->
             <div class="mb-3">
                 <select id="filtro-direccion" onchange="aplicarFiltrosLista()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
                     <option value="">-- Filtrar Lista por Dirección o Comisión --</option>
                     <option value="Consejo Scout Nacional">Consejo Scout Nacional</option>
                     <option value="Corte de Honor Nacional">Corte de Honor Nacional</option>
-                    <option value="Jefatura Scout Nacional">Jefatura Scout Nacional</option>
-                    <option value="Cancillería Nacional">Cancillería Nacional</option>
                     <option value="Comisión Nacional de Vigilancia y Control">Comisión Nacional de Vigilancia y Control</option>
                     <option value="Dirección Nacional Administrativa">Dirección Nacional Administrativa</option>
+                    <option value="Comisión Nacional de Calidad">Comisión Nacional de Calidad</option>
+                    <option value="Jefatura Scout Nacional">Jefatura Scout Nacional</option>
                     <option value="Dirección Nacional de Comunicaciones">Dirección Nacional de Comunicaciones</option>
-                    <option value="Dirección Nacional de Adultos en el Movimiento">Dirección Nacional de Adultos en el Movimiento</option>
+                    <option value="Cancillería Nacional">Cancillería Nacional</option>
                     <option value="Atracción y Vinculación - DNAM">Atracción y Vinculación - DNAM</option>
                     <option value="Comisión Nacional de Bienestar - DNAM">Comisión Nacional de Bienestar - DNAM</option>
                     <option value="Comisión Nacional de Evaluación y Acompañamiento - DNAM">Comisión Nacional de Evaluación y Acompañamiento - DNAM</option>
                     <option value="Comisión Nacional de Formación - DNAM">Comisión Nacional de Formación - DNAM</option>
-                    <option value="Dirección Nacional de Programa de Jóvenes">Dirección Nacional de Programa de Jóvenes</option>
                     <option value="Comisión Nacional para Cachorros - DNPJ">Comisión Nacional para Cachorros - DNPJ</option>
                     <option value="Comisión Nacional para Lobatos - DNPJ">Comisión Nacional para Lobatos - DNPJ</option>
                     <option value="Comisión Nacional para Scouts - DNPJ">Comisión Nacional para Scouts - DNPJ</option>
                     <option value="Comisión Nacional para Nomadas Scout - DNPJ">Comisión Nacional para Nomadas Scout - DNPJ</option>
                     <option value="Comisión Nacional para Rovers - DNPJ">Comisión Nacional para Rovers - DNPJ</option>
                     <option value="Comisión Nacional por los ODS - DNPJ">Comisión Nacional por los ODS - DNPJ</option>
-                    <option value="Dirección Nacional de Desarrollo Institucional">Dirección Nacional de Desarrollo Institucional</option>
                     <option value="Comisión Nacional de Crecimiento - DNDI">Comisión Nacional de Crecimiento - DNDI</option>
                     <option value="Comisión Internacional - DNDI">Comisión Internacional - DNDI</option>
                     <option value="Comisión Nacional de A salvo del Peligro - DNDI">Comisión Nacional de A salvo del Peligro - DNDI</option>
@@ -141,17 +137,19 @@
                 </div>
             </div>
 
+            <!-- Leyenda de colores actualizada -->
             <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-3 items-center justify-center text-[11px] text-slate-600">
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span> Consejo / Corte</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Jefatura / Cancillería</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span> Comunicaciones / Adm</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> DNAM / DNPJ / DNDI</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block"></span> Morado</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-green-600 inline-block"></span> Verde</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span> Rojo</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-lime-500 inline-block"></span> Verde Lima</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Azul Celeste</span>
                 <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-300 inline-block border border-emerald-400"></span> Día Festivo</span>
             </div>
         </section>
     </main>
 
-    <!-- Modal de Actividad -->
+    <!-- Modal con las opciones actualizadas -->
     <div id="modal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative">
             <h3 id="modal-titulo" class="text-lg font-bold text-slate-800 mb-4">Nueva Actividad</h3>
@@ -176,24 +174,22 @@
                     <select id="act-direccion" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                         <option value="Consejo Scout Nacional">Consejo Scout Nacional</option>
                         <option value="Corte de Honor Nacional">Corte de Honor Nacional</option>
-                        <option value="Jefatura Scout Nacional">Jefatura Scout Nacional</option>
-                        <option value="Cancillería Nacional">Cancillería Nacional</option>
                         <option value="Comisión Nacional de Vigilancia y Control">Comisión Nacional de Vigilancia y Control</option>
                         <option value="Dirección Nacional Administrativa">Dirección Nacional Administrativa</option>
+                        <option value="Comisión Nacional de Calidad">Comisión Nacional de Calidad</option>
+                        <option value="Jefatura Scout Nacional">Jefatura Scout Nacional</option>
                         <option value="Dirección Nacional de Comunicaciones">Dirección Nacional de Comunicaciones</option>
-                        <option value="Dirección Nacional de Adultos en el Movimiento">Dirección Nacional de Adultos en el Movimiento</option>
+                        <option value="Cancillería Nacional">Cancillería Nacional</option>
                         <option value="Atracción y Vinculación - DNAM">Atracción y Vinculación - DNAM</option>
                         <option value="Comisión Nacional de Bienestar - DNAM">Comisión Nacional de Bienestar - DNAM</option>
                         <option value="Comisión Nacional de Evaluación y Acompañamiento - DNAM">Comisión Nacional de Evaluación y Acompañamiento - DNAM</option>
                         <option value="Comisión Nacional de Formación - DNAM">Comisión Nacional de Formación - DNAM</option>
-                        <option value="Dirección Nacional de Programa de Jóvenes">Dirección Nacional de Programa de Jóvenes</option>
                         <option value="Comisión Nacional para Cachorros - DNPJ">Comisión Nacional para Cachorros - DNPJ</option>
                         <option value="Comisión Nacional para Lobatos - DNPJ">Comisión Nacional para Lobatos - DNPJ</option>
                         <option value="Comisión Nacional para Scouts - DNPJ">Comisión Nacional para Scouts - DNPJ</option>
                         <option value="Comisión Nacional para Nomadas Scout - DNPJ">Comisión Nacional para Nomadas Scout - DNPJ</option>
                         <option value="Comisión Nacional para Rovers - DNPJ">Comisión Nacional para Rovers - DNPJ</option>
                         <option value="Comisión Nacional por los ODS - DNPJ">Comisión Nacional por los ODS - DNPJ</option>
-                        <option value="Dirección Nacional de Desarrollo Institucional">Dirección Nacional de Desarrollo Institucional</option>
                         <option value="Comisión Nacional de Crecimiento - DNDI">Comisión Nacional de Crecimiento - DNDI</option>
                         <option value="Comisión Internacional - DNDI">Comisión Internacional - DNDI</option>
                         <option value="Comisión Nacional de A salvo del Peligro - DNDI">Comisión Nacional de A salvo del Peligro - DNDI</option>
@@ -210,8 +206,7 @@
     </div>
 
     <script>
-        // ⚠️ PEGA AQUÍ TU URL DE IMPLEMENTACIÓN WEB DE GOOGLE APPS SCRIPT
-        const API_URL = "https://script.google.com/macros/s/AKfycbyTO-v5ecLJH45GmVBdE95ekNZW0fK9GXJHsI3QG7Rvju1VUNuW_MDitfUgsz01GWM0/exec";
+        const API_URL = "https://script.google.com/macros/s/TU_ID_DE_IMPLEMENTACION_AQUI/exec"; // Reemplaza por tu URL de Google Apps Script
 
         let globalActividades = [];
         let mesActual = 0; 
@@ -292,6 +287,37 @@
             renderizarLista(filtradas);
         }
 
+        function obtenerClaseBadge(direccion) {
+            const d = direccion;
+            // GRUPO MORADO
+            if (d.includes('Consejo Scout Nacional') || 
+                d.includes('Corte de Honor Nacional') || 
+                d.includes('Comisión Nacional de Vigilancia y Control') || 
+                d.includes('Dirección Nacional Administrativa') || 
+                d.includes('Comisión Nacional de Calidad')) {
+                return 'badge-morado';
+            }
+            // GRUPO VERDE
+            if (d.includes('Jefatura Scout Nacional') || 
+                d.includes('Dirección Nacional de Comunicaciones') || 
+                d.includes('Cancillería Nacional')) {
+                return 'badge-verde';
+            }
+            // GRUPO ROJO
+            if (d.includes('DNAM')) {
+                return 'badge-rojo';
+            }
+            // GRUPO VERDE LIMA
+            if (d.includes('DNPJ')) {
+                return 'badge-limon';
+            }
+            // GRUPO AZUL CELESTE
+            if (d.includes('DNDI') || d.includes('Comisión Internacional')) {
+                return 'badge-celeste';
+            }
+            return 'badge-default';
+        }
+
         function renderizarCalendarioMes() {
             document.getElementById('mes-titulo').innerText = `${nombresMeses[mesActual]} 2027`;
             const tbody = document.getElementById('calendario-grid');
@@ -342,19 +368,7 @@
 
                 const actsDia = globalActividades.filter(a => fechaYMD >= a.fechaInicio && fechaYMD <= a.fechaFin);
                 actsDia.forEach(act => {
-                    let badgeClass = 'badge-default';
-                    const d = act.direccion;
-                    if (d.includes('Consejo')) badgeClass = 'badge-consejo';
-                    else if (d.includes('Corte')) badgeClass = 'badge-corte';
-                    else if (d.includes('Jefatura')) badgeClass = 'badge-jefatura';
-                    else if (d.includes('Cancillería')) badgeClass = 'badge-cancilleria';
-                    else if (d.includes('Vigilancia')) badgeClass = 'badge-vigilancia';
-                    else if (d.includes('Administrativa')) badgeClass = 'badge-administrativa';
-                    else if (d.includes('Comunicaciones')) badgeClass = 'badge-comunicaciones';
-                    else if (d.includes('DNAM')) badgeClass = 'badge-dnam';
-                    else if (d.includes('DNPJ')) badgeClass = 'badge-dnpj';
-                    else if (d.includes('DNDI')) badgeClass = 'badge-dndi';
-
+                    const badgeClass = obtenerClaseBadge(act.direccion);
                     contenidoHtml += `<div class="p-1 rounded text-[10px] leading-tight ${badgeClass} font-medium" title="${act.direccion}: ${act.actividad}">
                         <strong class="block truncate">${act.direccion.split(' - ')[0]}</strong>
                         <span class="truncate block">${act.actividad}</span>
@@ -391,21 +405,21 @@
 
             data.forEach(item => {
                 const card = document.createElement('div');
-                card.className = `p-3 rounded-lg shadow-xs transition hover:shadow-md bg-emerald-50/80 border-l-4 border-emerald-600 text-emerald-900 flex justify-between items-start`;
+                card.className = `p-3 rounded-lg shadow-xs transition hover:shadow-md bg-slate-50 border border-slate-200 text-slate-900 flex justify-between items-start`;
                 
                 let etiquetaFechas = item.fechaInicio === item.fechaFin ? item.fechaInicio : `${item.fechaInicio} al ${item.fechaFin}`;
 
                 card.innerHTML = `
                     <div class="space-y-1">
                         <div class="flex items-center gap-2 flex-wrap">
-                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-white text-emerald-900"><i class="fa-regular fa-calendar mr-1"></i>${etiquetaFechas}</span>
-                            <span class="text-xs font-semibold opacity-90">${item.direccion}</span>
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700"><i class="fa-regular fa-calendar mr-1"></i>${etiquetaFechas}</span>
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded ${obtenerClaseBadge(item.direccion)}">${item.direccion}</span>
                         </div>
-                        <p class="text-sm font-medium">${item.actividad}</p>
+                        <p class="text-sm font-medium mt-1">${item.actividad}</p>
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
-                        <button onclick='editar(${JSON.stringify(item)})' class="p-1.5 hover:bg-emerald-900/10 rounded text-xs cursor-pointer" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="eliminar(${item.id})" class="p-1.5 hover:bg-red-500/10 text-red-600 rounded text-xs cursor-pointer" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick='editar(${JSON.stringify(item)})' class="p-1.5 hover:bg-slate-200 rounded text-xs cursor-pointer text-slate-600" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="eliminar(${item.id})" class="p-1.5 hover:bg-red-100 text-red-600 rounded text-xs cursor-pointer" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
                 container.appendChild(card);
