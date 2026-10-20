@@ -50,11 +50,9 @@
                 </div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-                <!-- Botón de Calendario Activo Inicialmente (Color Oscuro) -->
                 <button id="btn-tab-calendario" onclick="cambiarVista('calendario')" class="bg-emerald-950 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800">
                     <i class="fa-solid fa-calendar-days"></i> Calendario
                 </button>
-                <!-- Botón de Actividades Inactivo (Color más claro) -->
                 <button id="btn-tab-actividades" onclick="cambiarVista('actividades')" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600">
                     <i class="fa-solid fa-list-check"></i> Actividades Registradas
                 </button>
@@ -70,7 +68,7 @@
 
     <main class="max-w-7xl w-full mx-auto px-4 py-4 flex-1 flex flex-col">
         
-        <!-- VISTA 1: CALENDARIO (Tamaño Fijo sin barras de desplazamiento horizontal) -->
+        <!-- VISTA 1: CALENDARIO -->
         <section id="vista-calendario" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col flex-1">
             <div class="flex justify-between items-center mb-3 bg-emerald-50 px-4 py-2.5 rounded-lg border border-emerald-100 shrink-0">
                 <button onclick="cambiarMes(-1)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm transition cursor-pointer shadow-xs">
@@ -99,13 +97,56 @@
                 </table>
             </div>
 
-            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-3 items-center justify-center text-[11px] text-slate-600 shrink-0">
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block"></span> Morado</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-green-600 inline-block"></span> Verde</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span> Rojo</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-lime-500 inline-block"></span> Verde Lima</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Azul Celeste</span>
-                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-300 inline-block border border-emerald-400"></span> Día Festivo</span>
+            <!-- Leyenda Detallada por Colores y Comisiones -->
+            <div class="mt-4 pt-3 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 text-[11px] text-slate-700 shrink-0">
+                <div class="p-2 rounded bg-purple-50 border border-purple-200">
+                    <span class="font-bold text-purple-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block"></span> Morado</span>
+                    <ul class="list-disc list-inside space-y-0.5 text-[10px] text-purple-950">
+                        <li>Consejo Scout Nacional</li>
+                        <li>Corte de Honor Nacional</li>
+                        <li>Comisión de Vigilancia y Control</li>
+                        <li>Dirección Nacional Administrativa</li>
+                        <li>Comisión Nacional de Calidad</li>
+                    </ul>
+                </div>
+                <div class="p-2 rounded bg-green-50 border border-green-200">
+                    <span class="font-bold text-green-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-green-600 inline-block"></span> Verde</span>
+                    <ul class="list-disc list-inside space-y-0.5 text-[10px] text-green-950">
+                        <li>Jefatura Scout Nacional</li>
+                        <li>Dirección de Comunicaciones</li>
+                        <li>Cancillería Nacional</li>
+                    </ul>
+                </div>
+                <div class="p-2 rounded bg-red-50 border border-red-200">
+                    <span class="font-bold text-red-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span> Rojo (DNAM)</span>
+                    <ul class="list-disc list-inside space-y-0.5 text-[10px] text-red-950">
+                        <li>Atracción y Vinculación</li>
+                        <li>Comisión de Bienestar</li>
+                        <li>Comisión de Evaluación y Acomp.</li>
+                        <li>Comisión de Formación</li>
+                    </ul>
+                </div>
+                <div class="p-2 rounded bg-lime-50 border border-lime-200">
+                    <span class="font-bold text-lime-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-lime-500 inline-block"></span> Verde Lima (DNPJ)</span>
+                    <ul class="list-disc list-inside space-y-0.5 text-[10px] text-lime-950">
+                        <li>Cachorros, Lobatos, Scouts</li>
+                        <li>Nomadas Scout, Rovers</li>
+                        <li>Comisión por los ODS</li>
+                    </ul>
+                </div>
+                <div class="p-2 rounded bg-sky-50 border border-sky-200">
+                    <span class="font-bold text-sky-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Azul Celeste (DNDI)</span>
+                    <ul class="list-disc list-inside space-y-0.5 text-[10px] text-sky-950">
+                        <li>Comisión de Crecimiento</li>
+                        <li>Comisión Internacional</li>
+                        <li>A salvo del Peligro</li>
+                        <li>Gestión del Riesgo e Innovación</li>
+                    </ul>
+                </div>
+                <div class="p-2 rounded bg-emerald-50 border border-emerald-200 flex flex-col justify-center items-center text-center">
+                    <span class="font-bold text-emerald-900 flex items-center gap-1 mb-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-300 border border-emerald-400 inline-block"></span> Festivos</span>
+                    <span class="text-[10px] text-emerald-950">Días festivos oficiales de Colombia 2027 marcados en verde claro.</span>
+                </div>
             </div>
         </section>
 
@@ -213,7 +254,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbyTO-v5ecLJH45GmVBdE95ekNZW0fK9GXJHsI3QG7Rvju1VUNuW_MDitfUgsz01GWM0/exec"; // Reemplaza por tu URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbyTO-v5ecLJH45GmVBdE95ekNZW0fK9GXJHsI3QG7Rvju1VUNuW_MDitfUgsz01GWM0/exec";
 
         let globalActividades = [];
         let mesActual = 0; 
@@ -241,7 +282,6 @@
             if (vista === 'calendario') {
                 secCal.classList.remove('hidden');
                 secAct.classList.add('hidden');
-                // Estilo botón activo (oscuro) vs inactivo (claro)
                 btnCal.className = "bg-emerald-950 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-800";
                 btnAct.className = "bg-emerald-700 hover:bg-emerald-600 text-white px-3.5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow cursor-pointer border border-emerald-600";
             } else {
@@ -338,7 +378,7 @@
             const totalDias = new Date(year, month + 1, 0).getDate();
 
             let fila = document.createElement('tr');
-            fila.className = "h-[14vh]";
+            fila.className = "h-[13vh]";
 
             for (let i = 0; i < primerDiaIndex; i++) {
                 const td = document.createElement('td');
@@ -352,7 +392,7 @@
                 if (diaSemanaActual > 6) {
                     tbody.appendChild(fila);
                     fila = document.createElement('tr');
-                    fila.className = "h-[14vh]";
+                    fila.className = "h-[13vh]";
                     diaSemanaActual = 0;
                 }
 
@@ -370,7 +410,7 @@
                 if (esFestivo) {
                     contenidoHtml += `<span class="text-[9px] text-emerald-900 font-bold" title="${festivos2027[fechaYMD]}"><i class="fa-solid fa-star text-[8px]"></i></span>`;
                 }
-                contenidoHtml += `</div><div class="space-y-1 overflow-y-auto max-h-[10vh] pr-0.5">`;
+                contenidoHtml += `</div><div class="space-y-1 overflow-y-auto max-h-[9vh] pr-0.5">`;
 
                 const actsDia = globalActividades.filter(a => fechaYMD >= a.fechaInicio && fechaYMD <= a.fechaFin);
                 actsDia.forEach(act => {
