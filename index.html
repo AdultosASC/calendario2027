@@ -343,6 +343,19 @@
                 const res = await llamarAPI({ accion: "getActividades" });
                 if (res.status === "success") {
                     globalActividades = res.data;
+                    
+                    // Auto-posicionar el calendario en el primer mes con actividades si existe alguna
+                    if (globalActividades.length > 0) {
+                        const primeraFecha = globalActividades[0].fechaInicio.trim(); // Ej: "2027-03-15"
+                        const partes = primeraFecha.split('-');
+                        if (partes.length === 3) {
+                            const mesActividad = parseInt(partes[1], 10) - 1; // 0 a 11
+                            if (!isNaN(mesActividad) && mesActividad >= 0 && mesActividad <= 11) {
+                                mesActual = mesActividad;
+                            }
+                        }
+                    }
+
                     renderizarLista(globalActividades);
                     renderizarCalendarioMes();
                 } else {
@@ -432,10 +445,10 @@
                 }
                 contenidoHtml += `</div><div class="space-y-1.5 pb-2">`;
 
-                // Filtrar actividades comparando limpiamente las cadenas YMD
+                // Filtrar actividades con coincidencia exacta y limpia de cadenas
                 const actsDia = globalActividades.filter(a => {
-                    const fInicio = a.fechaInicio.trim();
-                    const fFin = a.fechaFin.trim();
+                    const fInicio = String(a.fechaInicio).trim();
+                    const fFin = String(a.fechaFin).trim();
                     return fechaYMD >= fInicio && fechaYMD <= fFin;
                 });
 
